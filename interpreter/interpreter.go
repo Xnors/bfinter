@@ -3,6 +3,8 @@ package interpreter
 import (
 	"bfinter/constants"
 	"fmt"
+	"bufio"
+	"os"
 )
 
 // Brainfuck解释器
@@ -10,7 +12,6 @@ func Interpret(code string) {
 	memory := make([]byte, constants.MemorySize) // 内存
 	ptr := 0                                     // 指针位置
 	pc := 0                                      // 程序计数器
-	loopStep := 0                                // 循环几次了
 
 	for pc < len(code) {
 		switch code[pc] {
@@ -31,8 +32,14 @@ func Interpret(code string) {
 		case '.':
 			fmt.Printf("%c", memory[ptr]) // 输出内存单元的字符
 		case ',':
-			// 在非交互模式下，我们简单地跳过输入指令
-			// 如果需要，可以在这里实现其他逻辑，例如从字符串中读取输入
+			// 读取一个字符并存入内存单元
+			reader := bufio.NewReader(os.Stdin)
+			input, err := reader.ReadByte()
+			if err != nil {
+				fmt.Printf("Error reading input: %v\n", err)
+				return
+			}
+			memory[ptr] = input
 		case '[':
 			if memory[ptr] == 0 {
 				// 如果当前内存单元为0，跳过对应的']'
@@ -49,13 +56,6 @@ func Interpret(code string) {
 		case ']':
 			if memory[ptr] != 0 {
 				// 如果当前内存单元不为0，跳回对应的'['
-
-				// 记录循环次数
-				loopStep++
-				if loopStep > constants.MaxLoop {
-					fmt.Printf("ERROR: 有可能存在一个死循环!\nINDEX: %d\n\n", pc+1)
-					return
-				}
 
 				bracketDepth := 1
 				for pc--; pc >= 0 && bracketDepth > 0; pc-- {

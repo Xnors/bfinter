@@ -1,7 +1,6 @@
 package analyzer
 
 import (
-	"bfinter/constants"
 	"fmt"
 )
 
@@ -43,6 +42,7 @@ func checkUnmatchedLoopLabel(program string) bool {
 
 // 动态分析Brainfuck代码(会忽略非法字符)
 
+/* 
 func DynamicAnalyze(code string) {
 	memory := make([]byte, constants.MemorySize) // 内存
 	ptr := 0                                     // 指针位置
@@ -89,3 +89,4 @@ func DynamicAnalyze(code string) {
 		pc++
 	}
 }
+ */

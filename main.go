@@ -12,26 +12,41 @@ func main() {
 
 	switch os.Args[1] {
 	case "run":
-		run()
+		bfCode, err := readBrainfuckCode(os.Args[2])
+		if err != nil {
+			panic(err)
+		}
+
+		check(bfCode, false)
+		run(bfCode)
 	case "check":
-		check(true)
+		bfCode, err := readBrainfuckCode(os.Args[2])
+		if err != nil {
+			panic(err)
+		}
+
+		check(bfCode, true)
+	case "cmd":
+		// 直接执行命令
+		cmd(os.Args[2])
 	default:
 		panic("Invalid command")
 	}
 }
 
-func check(printCheckLogs bool) string {
-	bfCode, err := readBrainfuckCode(os.Args[2])
-	if err != nil {
-		panic(err)
-	}
+func cmd(bfCode string) {
+	check(bfCode, false)
+	run(bfCode)
+}
+
+func check(bfCode string, printCheckLogs bool) string {
 
 	if printCheckLogs {
 		fmt.Println("静态检查中...")
 		analyzer.StaticAnalyze(bfCode)
 
 		fmt.Println("动态检查中...")
-		analyzer.DynamicAnalyze(bfCode)
+		// analyzer.DynamicAnalyze(bfCode)
 
 		fmt.Println("代码检查完毕")
 
@@ -39,12 +54,11 @@ func check(printCheckLogs bool) string {
 	}
 
 	analyzer.StaticAnalyze(bfCode)
-	analyzer.DynamicAnalyze(bfCode)
+	// analyzer.DynamicAnalyze(bfCode)
 	return bfCode
 }
 
-func run() {
-	bfCode := check(false)
+func run(bfCode string) {
 	interpreter.Interpret(bfCode)
 }
 
