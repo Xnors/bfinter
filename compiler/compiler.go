@@ -46,24 +46,87 @@ func CompileToC(filename string) string {
 	cCode := "#include <stdio.h>\nint main() {\n    char tape[30000] = {0};\n    char *ptr = tape;\n"
 
 	// 遍历Brainfuck代码，并转换为C语言
+	var count int
+	var lastOp rune
 	for _, char := range string(code) {
 		switch char {
-		case '+':
-			cCode += "    ++*ptr;\n" // 增加*ptr的值
-		case '-':
-			cCode += "    --*ptr;\n" // 减少*ptr的值
-		case '>':
-			cCode += "    ++ptr;\n" // 移动指针到下一个位置
-		case '<':
-			cCode += "    --ptr;\n" // 移动指针到前一个位置
-		case '.':
-			cCode += "    putchar(*ptr);\n" // 输出*ptr的值
-		case ',':
-			cCode += "    *ptr = getchar();\n" // 从输入读取一个字符到*ptr
-		case '[':
-			cCode += "    while (*ptr) {\n" // 开始一个循环，如果*ptr不为0
-		case ']':
-			cCode += "    }\n" // 结束一个循环
+		case '+', '-':
+			if char == lastOp {
+				// 如果当前操作符与前一个相同，增加计数
+				count++
+			} else {
+				// 如果操作符改变或首次遇到操作符，处理之前的操作
+				if lastOp != 0 {
+					if count > 1 {
+						if lastOp == '+' {
+							cCode += fmt.Sprintf("    *ptr += %d;\n", count)
+						} else {
+							cCode += fmt.Sprintf("    *ptr -= %d;\n", count)
+						}
+					} else if count == 1 {
+						if lastOp == '+' {
+							cCode += "    ++*ptr;\n"
+						} else {
+							cCode += "    --*ptr;\n"
+						}
+					}
+				}
+				// 重置计数器和上一个操作符
+				count = 1
+				lastOp = char
+			}
+		default:
+			// 如果操作符改变或首次遇到操作符，处理之前的操作
+			if lastOp != 0 {
+				if count > 1 {
+					if lastOp == '+' {
+						cCode += fmt.Sprintf("    *ptr += %d;\n", count)
+					} else {
+						cCode += fmt.Sprintf("    *ptr -= %d;\n", count)
+					}
+				} else if count == 1 {
+					if lastOp == '+' {
+						cCode += "    ++*ptr;\n"
+					} else {
+						cCode += "    --*ptr;\n"
+					}
+				}
+				// 重置计数器和上一个操作符
+				count = 0
+				lastOp = 0
+			}
+			// 根据当前操作符添加C代码
+			switch char {
+			case '>':
+				cCode += "    ++ptr;\n"
+			case '<':
+				cCode += "    --ptr;\n"
+			case '.':
+				cCode += "    putchar(*ptr);\n"
+			case ',':
+				cCode += "    *ptr = getchar();\n"
+			case '[':
+				cCode += "    while (*ptr) {\n"
+			case ']':
+				cCode += "    }\n"
+			}
+		}
+	}
+
+	// 处理最后一个操作符（如果有的话）
+	if lastOp != 0 {
+		if count > 1 {
+			if lastOp == '+' {
+				cCode += fmt.Sprintf("    *ptr += %d;\n", count)
+			} else {
+				cCode += fmt.Sprintf("    *ptr -= %d;\n", count)
+			}
+		} else if count == 1 {
+			if lastOp == '+' {
+				cCode += "    ++*ptr;\n"
+			} else {
+				cCode += "    --*ptr;\n"
+			}
 		}
 	}
 

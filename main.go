@@ -9,6 +9,17 @@ import (
 	"os"
 )
 
+var (
+	USAGE = `
+	用法:	
+		bfinter run <file>			| 运行Brainfuck代码
+		bfinter check <file>			| 检查Brainfuck代码
+		bfinter cmd <code>			| 执行Brainfuck代码
+		bfinter compile <file>			| 编译Brainfuck代码
+		bfinter outc <file>			| 转换Brainfuck代码为C语言代码
+	`
+)
+
 func main() {
 	checkArgs()
 
@@ -93,6 +104,6 @@ func readBrainfuckCode(filePath string) (string, error) {
 
 func checkArgs() {
 	if len(os.Args) != 3 {
-		panic("USAGE:\n\t<program> run <file>\t\tTo run brainfuck code from file\n\t<program> check <file>\tTo check brainfuck code from file\n")
+		panic(USAGE)
 	}
 }

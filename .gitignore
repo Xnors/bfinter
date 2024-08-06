@@ -2,3 +2,5 @@
 cache/
 *.bat
 *.c
+*.s
+*.txt
