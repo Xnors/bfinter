@@ -1,7 +1,9 @@
 package main
 
 import (
+	"C" // 必须引入, 否则编译时会报错, 我也不知道为什么
 	"bfinter/analyzer"
+	"bfinter/compiler"
 	"bfinter/interpreter"
 	"fmt"
 	"os"
@@ -29,6 +31,20 @@ func main() {
 	case "cmd":
 		// 直接执行命令
 		cmd(os.Args[2])
+	case "compile":
+		// 检查代码
+		check(os.Args[2], false)
+
+		// 编译代码
+		compiler.Compile(os.Args[2])
+
+	case "outc":
+		// 检查代码
+		check(os.Args[2], false)
+
+		// 转换代码
+		compiler.CompileToC(os.Args[2])
+
 	default:
 		panic("Invalid command")
 	}
