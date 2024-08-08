@@ -1,3 +1,6 @@
 *.exe
 cache/
 *.bat
+*.c
+*.s
+*.txt

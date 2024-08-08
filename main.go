@@ -1,10 +1,23 @@
 package main
 
 import (
+	"C" // 必须引入, 否则编译时会报错, 我也不知道为什么
 	"bfinter/analyzer"
+	"bfinter/compiler"
 	"bfinter/interpreter"
 	"fmt"
 	"os"
+)
+
+var (
+	USAGE = `
+	用法:	
+		bfinter run <file>			| 运行Brainfuck代码
+		bfinter check <file>			| 检查Brainfuck代码
+		bfinter cmd <code>			| 执行Brainfuck代码
+		bfinter compile <file>			| 编译Brainfuck代码
+		bfinter outc <file>			| 转换Brainfuck代码为C语言代码
+	`
 )
 
 func main() {
@@ -29,6 +42,20 @@ func main() {
 	case "cmd":
 		// 直接执行命令
 		cmd(os.Args[2])
+	case "compile":
+		// 检查代码
+		check(os.Args[2], false)
+
+		// 编译代码
+		compiler.Compile(os.Args[2])
+
+	case "outc":
+		// 检查代码
+		check(os.Args[2], false)
+
+		// 转换代码
+		compiler.CompileToC(os.Args[2])
+
 	default:
 		panic("Invalid command")
 	}
@@ -77,6 +104,6 @@ func readBrainfuckCode(filePath string) (string, error) {
 
 func checkArgs() {
 	if len(os.Args) != 3 {
-		panic("USAGE:\n\t<program> run <file>\t\tTo run brainfuck code from file\n\t<program> check <file>\tTo check brainfuck code from file\n")
+		panic(USAGE)
 	}
 }
