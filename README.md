@@ -7,7 +7,7 @@ cd %GO_PATH%/src
 ```
 克隆此项目
 ```shell
-git clone https://github.com/fexcode/bfinter.git
+git clone https://github.com/xnors/bfinter.git
 ```
 切换到项目目录
 ```shell
