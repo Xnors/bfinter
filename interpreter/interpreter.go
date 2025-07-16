@@ -45,7 +45,8 @@ func Interpret(code string) {
 				// 如果当前内存单元为0，跳过对应的']'
 
 				bracketDepth := 1
-				for pc++; pc < len(code) && bracketDepth > 0; pc++ {
+				for bracketDepth > 0 {
+					pc++
 					if code[pc] == '[' {
 						bracketDepth++
 					} else if code[pc] == ']' {
@@ -58,7 +59,8 @@ func Interpret(code string) {
 				// 如果当前内存单元不为0，跳回对应的'['
 
 				bracketDepth := 1
-				for pc--; pc >= 0 && bracketDepth > 0; pc-- {
+				for bracketDepth > 0 {
+					pc--
 					if code[pc] == '[' {
 						bracketDepth--
 					} else if code[pc] == ']' {
