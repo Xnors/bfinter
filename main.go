@@ -30,8 +30,9 @@ func main() {
 			panic(err)
 		}
 
-		check(bfCode, false)
-		run(bfCode)
+		if check(bfCode, false) {
+		    run(bfCode)
+		}
 	case "check":
 		bfCode, err := readBrainfuckCode(os.Args[2])
 		if err != nil {
@@ -44,17 +45,17 @@ func main() {
 		cmd(os.Args[2])
 	case "compile":
 		// 检查代码
-		check(os.Args[2], false)
-
-		// 编译代码
-		compiler.Compile(os.Args[2])
+		if check(os.Args[2], false) {
+		    // 编译代码
+		    compiler.Compile(os.Args[2])
+		}
 
 	case "outc":
 		// 检查代码
-		check(os.Args[2], false)
-
-		// 转换代码
-		compiler.CompileToC(os.Args[2])
+		if check(os.Args[2], false) {
+	    	// 转换代码
+		    compiler.CompileToC(os.Args[2])
+		}
 
 	default:
 		panic("Invalid command")
@@ -62,27 +63,26 @@ func main() {
 }
 
 func cmd(bfCode string) {
-	check(bfCode, false)
-	run(bfCode)
+	if !check(bfCode, false) {
+	    run(bfCode)
+	}
 }
 
-func check(bfCode string, printCheckLogs bool) string {
-
+func check(bfCode string, printCheckLogs bool) bool {
 	if printCheckLogs {
 		fmt.Println("静态检查中...")
-		analyzer.StaticAnalyze(bfCode)
+		result := analyzer.StaticAnalyze(bfCode)
 
-		fmt.Println("动态检查中...")
+		// fmt.Println("动态检查中...")
 		// analyzer.DynamicAnalyze(bfCode)
 
 		fmt.Println("代码检查完毕")
-
-		return bfCode
+		return result
+	} else {
+    	result := analyzer.StaticAnalyze(bfCode)
+	    // analyzer.DynamicAnalyze(bfCode)
+		return result
 	}
-
-	analyzer.StaticAnalyze(bfCode)
-	// analyzer.DynamicAnalyze(bfCode)
-	return bfCode
 }
 
 func run(bfCode string) {

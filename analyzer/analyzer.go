@@ -6,9 +6,9 @@ import (
 
 // 静态分析Brainfuck代码(会忽略非法字符)
 // 检测不匹配的括号
-func StaticAnalyze(code string) {
+func StaticAnalyze(code string) bool {
 	// 检测不匹配的括号
-	checkUnmatchedLoopLabel(code)
+	return checkUnmatchedLoopLabel(code)
 }
 
 // detectDeadunmatchedParenthesesLoop 检查Brainfuck程序中是否存在未匹配的循环标签。
@@ -36,8 +36,8 @@ func checkUnmatchedLoopLabel(program string) bool {
 		fmt.Printf("ERROR: 未匹配的 '['\nINDEX: %d\n\n", loopStack[len(loopStack)-1]+1)
 	}
 
-	// 如果栈为空，说明循环标签匹配正确，返回未检测到明显的死循环
-	return false
+	// 如果栈为空，说明循环标签匹配正确
+	return true
 }
 
 // 动态分析Brainfuck代码(会忽略非法字符)
