@@ -1,5 +1,5 @@
 package constants
 
 const (
-	MemorySize = 300  // Brainfuck内存大小
+	MemorySize = 300000  // Brainfuck内存大小
 )
